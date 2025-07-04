@@ -47,9 +47,4 @@ contract BookAccess is ERC1155, Ownable {
         require(coins.transferFrom(msg.sender, book.author, book.price),"Payment failed");
         _mint(msg.sender, tokenId, 1, "");
     }
-
-    function getBookURI(uint tokenId) external view returns (string memory) {
-        require(balanceOf(msg.sender, tokenId) > 0, "Access denied: Buy the book first");
-        return string(abi.encodePacked("ipfs://", tokenURIs[tokenId]));
-    }
 }
