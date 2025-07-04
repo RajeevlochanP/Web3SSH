@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { connectionActions, userdata } from '../store/store.js'
 import toast from 'react-hot-toast';
 import { ethers } from "ethers";
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
+import { handleGetCoins } from '../helper/clickFunctions.js';
 
 function Header() {
     const userData=useSelector(state=>state.userdata.address)
     const dispatch = useDispatch();
     const isConnected = useSelector(state => state.connect.isConnected);
-
+    const [openBuy,setOpenBuy]=useState(false);
     async function handleConnect() {
         async function connectWallet() {
             if (!window.ethereum) {
@@ -17,7 +18,6 @@ function Header() {
                 toast.error("neek account ledh raa");
                 return;
             }
-
             const provider = new ethers.BrowserProvider(window.ethereum);
             await provider.send("eth_requestAccounts", []);
             const signer = await provider.getSigner();
@@ -29,6 +29,9 @@ function Header() {
             toast.success("Connected to wallet successfully");
         }
         await connectWallet();
+    }
+    async function handleBuy(){
+        
     }
     useEffect(()=>{console.log(userData)},[userData]);
     return (
@@ -47,6 +50,31 @@ function Header() {
                 <div className={styles.actions}>
                     {!isConnected && <button className={styles.signupBtn} onClick={handleConnect}>Connect Wallet</button>}
                 </div>
+                                   {(isConnected && !openBuy) &&
+                   <button 
+                        className={styles.signupBtn}
+                        onClick={()=>{setOpenBuy(true)}}
+                    >
+                    Purchase V</button>}
+
+                    {openBuy && 
+                        <div className={styles.actions}> 
+                            <input 
+                                type="text" 
+                                placeholder='Enter Number of V'
+                                className={styles.searchInput}
+                            />
+                            <button 
+                                className={styles.signupBtn} 
+                                onClick={handleBuy}
+                            >Buy</button>
+
+                            <button 
+                                className={styles.loginBtn} 
+                                onClick={()=>{setOpenBuy(false)}}
+                            >Cancel</button>
+                        </div>
+                    }
             </div>
         </header>
     )

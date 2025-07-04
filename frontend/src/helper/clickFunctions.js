@@ -1,7 +1,7 @@
-export async function handleGetCoins() {
+export async function handleGetCoins(cost) {
     try {
         const { contract } = await getCoinsContract();
-        const tx = await contract.getCoins({ value: ethers.parseEther("0.01") });
+        const tx = await contract.getCoins({ value: ethers.parseEther(`${cost}`) });
         await tx.wait();
         alert("Coins bought successfully!");
     } catch (err) {

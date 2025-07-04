@@ -51,8 +51,7 @@ function ReaderNav() {
 
                 <nav className={styles.nav}>
                     <Link to="/r/home" className={styles.navLink}>Home</Link>
-                    <Link to="#library" className={styles.navLink}>My Library</Link>
-                    <Link to="#favorites" className={styles.navLink}>Favorites</Link>
+                    <Link to="/r/library" className={styles.navLink}>My Library</Link>
                 </nav>
 
 
