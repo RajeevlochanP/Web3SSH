@@ -11,7 +11,7 @@ contract Coins is ERC20, Ownable {
     uint256 public constant weii=3; //for adding coins
     uint256 public constant weif=4; // for withdrawing 
     uint256 public constant MINIMUM_STAKE_VALUE=1000;
-    mapping(address => uint256)stakedAmounts;
+    mapping(address => uint256) public stakedAmounts;
 
     event coinsBought(address recipient, uint256 amount);
     event withdrawn(address recipient, uint256 amount);

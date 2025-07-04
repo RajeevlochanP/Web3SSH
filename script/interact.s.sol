@@ -18,7 +18,7 @@ contract Interact is Script {
         vm.startBroadcast(privateKey);
         Coins coins=Coins(payable(coinsAddr));
         // BookAccess bookAccess=BookAccess(bookAccessAddr);
-        coins.getCoins{value:100}();
+        coins.getCoins{value:0.01 ether}();
         vm.stopBroadcast();
     }
 }
