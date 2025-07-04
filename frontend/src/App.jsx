@@ -7,6 +7,7 @@ import PublishPage from './pages/PublishPage'
 import PublisherProfile from './pages/PublisherProfile'
 import ReaderHome from './components/ReaderHome'
 import ReaderProfile from './components/ReaderProfile'
+import ReaderLib from './components/ReaderLib.jsx'
 import Hero from './pages/Hero'
 import { Toaster } from 'react-hot-toast'
 
@@ -29,7 +30,7 @@ function App() {
                     element:<PublishPage />
                 },
                 {
-                    path:'profile',
+                    path:'publications',
                     element:<PublisherProfile />
                 }
             ]
@@ -45,13 +46,17 @@ function App() {
                 {
                     path:'profile',
                     element:<ReaderProfile />
+                },
+                {
+                    path:'library',
+                    element:<ReaderLib />
                 }
             ]
         }
     ])
     return (
         <div>
-            <Toaster position="top-center" />
+            <Toaster position="top-center"/>
             <RouterProvider router={router}/>
         </div>
     )

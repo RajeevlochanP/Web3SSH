@@ -1,11 +1,12 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
-import Header from './Header'
+import ReaderNav from './ReaderNav'
+import PublisherNav from './PublisherNav'
 
 function RootLayout() {
   return (
     <>
-      <Header />
+      <PublisherNav />
       <Outlet />
     </>
   )
