@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.30;
 
-import "hardhat/console.sol";
+import "forge-std/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract coins is ERC20, Ownable {
+contract Coins is ERC20, Ownable {
 
     // uint256 public constant INITIAL_SUPPLY = 1e27;
     uint256 public constant weii=3; //for adding coins
@@ -23,6 +23,8 @@ contract coins is ERC20, Ownable {
     }
 
     function getCoins() external payable {
+        console.log("msg.value:", msg.value);
+        console.log("will mint:", msg.value * weii);
         uint amount=msg.value*weii;
         // require(balanceOf(address(this))>=amount,"Insufficient amount in contract");
         _mint(msg.sender, amount);

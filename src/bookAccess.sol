@@ -4,8 +4,9 @@ pragma solidity 0.8.30;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "forge-std/console.sol";
 
-contract BookAccess1155 is ERC1155, Ownable {
+contract BookAccess is ERC1155, Ownable {
     uint public nextTokenId;
 
     IERC20 public coins;
