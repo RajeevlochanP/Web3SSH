@@ -1,0 +1,72 @@
+/* Background */
+.landing-bg {
+  background: url('/your-background.jpg') no-repeat center/cover;
+}
+
+/* Navbar */
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+}
+.brand {
+  display: flex;
+  align-items: center;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.5rem;
+}
+.brand-name {
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+.btn-connect {
+  background-color: #4f91f3;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.btn-connect:hover {
+  opacity: 0.85;
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  color: white;
+  padding: 6rem 2rem;
+}
+.hero h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.hero p {
+  font-size: 1.25rem;
+}
+
+/* Feature Cards */
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 4rem 2rem;
+  flex-wrap: wrap;
+}
+.feature-card {
+  background: rgba(255, 255, 255, 0.9);
+  width: 280px;
+  padding: 1.5rem;
+  margin: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+.feature-card h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+.feature-card p {
+  color: #555;
+}

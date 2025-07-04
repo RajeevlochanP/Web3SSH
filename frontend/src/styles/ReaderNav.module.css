@@ -1,0 +1,279 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  gap: 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.logoIcon {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.brandName {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.readerBadge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.searchSection {
+  flex: 1;
+  max-width: 600px;
+  margin: 0 40px;
+}
+
+.searchForm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.searchContainer {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.searchContainer.focused {
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+}
+
+.searchIcon {
+  padding: 0 16px;
+  color: #666;
+  font-size: 16px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+.clearButton {
+  padding: 0 16px;
+  background: none;
+  color: #999;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.clearButton:hover {
+  color: #667eea;
+}
+
+.searchButton {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.searchButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+  flex-shrink: 0;
+}
+
+.navLink {
+  color: #333;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 8px 0;
+}
+
+.navLink:hover {
+  color: #667eea;
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+}
+
+.navLink:hover::after {
+  width: 100%;
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.notifications {
+  position: relative;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.notifications:hover {
+  background: #f8f9fa;
+}
+
+.notificationIcon {
+  font-size: 20px;
+  color: #666;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #ff4757;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: background-color 0.3s ease;
+}
+
+.userProfile:hover {
+  background: #f8f9fa;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.userName {
+  font-weight: 500;
+  color: #333;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    gap: 20px;
+  }
+  
+  .searchSection {
+    margin: 0 20px;
+  }
+  
+  .nav {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+    height: 70px;
+  }
+  
+  .nav {
+    display: none;
+  }
+  
+  .searchSection {
+    margin: 0 16px;
+  }
+  
+  .searchForm {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .searchButton {
+    width: 100%;
+  }
+  
+  .userSection {
+    gap: 16px;
+  }
+  
+  .userName {
+    display: none;
+  }
+}
