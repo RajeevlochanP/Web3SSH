@@ -14,9 +14,21 @@ const connectionSlice=createSlice({
     }
 });
 
+const userSlice=createSlice({
+    name:'userdata',
+    initialState:{address:''},
+    reducers:{
+        setData(state,action) {
+            const {address}=action.payload
+            state.address=address
+        }
+    }
+})
+
 const store=configureStore({
-    reducer:{connect:connectionSlice.reducer}
+    reducer:{connect:connectionSlice.reducer,userdata:userSlice.reducer}
 })
 
 export const connectionActions=connectionSlice.actions;
+export const userdata=userSlice.actions;
 export default store;

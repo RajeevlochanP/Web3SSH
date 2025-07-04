@@ -1,12 +1,45 @@
+// contractHelper.js
 import { ethers } from "ethers";
 import CoinsABI from "../ABI/Coins.json";
+import BookAccessABI from "../ABI/BookAccess.json";
+
+const coinsContractAddress = import.meta.env.VITE_COINS_CONTRACT;
+const BookAccessAddress = import.meta.env.BOOK_ACCESS_ADDR;
 
 export async function getCoinsContract() {
-  const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+  // Check if MetaMask is available
+  if (!window.ethereum) {
+    throw new Error("MetaMask not detected");
+  }
 
-  const signer = provider.getSigner(0);
+  // Ask user to connect wallet
+  await window.ethereum.request({ method: "eth_requestAccounts" });
 
-  const contract = new ethers.Contract(process.env.COINS_ADDR, CoinsABI.abi, signer);
+  // Create provider and signer from MetaMask
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
 
-  return contract;
+  // Create contract instance with signer
+  const contract = new ethers.Contract(coinsContractAddress, CoinsABI.abi, signer);
+
+  return { contract, signer };
+}
+
+export async function getBookAccessCOntract() {
+  // Check if MetaMask is available
+  if (!window.ethereum) {
+    throw new Error("MetaMask not detected");
+  }
+
+  // Ask user to connect wallet
+  await window.ethereum.request({ method: "eth_requestAccounts" });
+
+  // Create provider and signer from MetaMask
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+
+  // Create contract instance with signer
+  const contract = new ethers.Contract(BookAccessAddress, BookAccessABI.abi, signer);
+
+  return { contract, signer };
 }
