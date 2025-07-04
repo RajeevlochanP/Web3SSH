@@ -1,12 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect,useRef } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import ReaderNav from './ReaderNav'
 import styles from '../styles/ReaderProfile.module.css'
+import {handleGetCoins,checkBalance,withdraw} from '../helper/clickFunctions.js'
+import toast from 'react-hot-toast'
+
 
 function ReaderProfile() {
   const [activeTab, setActiveTab] = useState('overview')
   const [isEditing, setIsEditing] = useState(false)
+  const [isAdding, setIsAdding] = useState(false);
+  const [isWd, setIsWd] = useState(false);
+  const [coins,setCoins]=useState(0); 
+  const getCoinsChange=useRef();
+  const getEthers=useRef();
+
   const [userInfo, setUserInfo] = useState({
     name: 'Alex Johnson',
     email: 'alex.johnson@email.com',
@@ -23,6 +32,16 @@ function ReaderProfile() {
       once: true,
       offset: 100
     })
+    async function fetch() {
+      let result=await checkBalance();
+      if(result>-1) {
+        setCoins(result);
+      }
+      else {
+        toast.error("Error while fetching balance");
+      }
+    }
+    fetch();
   }, [])
 
   const readingStats = {
@@ -80,10 +99,40 @@ function ReaderProfile() {
     }))
   }
 
+  async function getCoins() {
+    let handle=await handleGetCoins(getCoinsChange.current.value);
+    if(handle.length<=1) {
+      toast.error(handle);
+      return ;
+    }
+    let bal=await checkBalance();
+    if(bal>-1) {
+      setCoins(bal);
+    }
+    else {
+      toast.error("Error while fetching balance");
+    }
+  }
+
+  async function handleWithDraw() {
+    let handle=await withdraw(getEthers.current.value);
+    if(handle.length<=1) {
+      toast.error(handle);
+      return ;
+    }
+    let bal=await checkBalance();
+    if(bal<0) {
+      toast.error("Error fetching balance");
+      return ;
+    }
+    setCoins(bal);
+    toast.success("Fetched balance successfully");
+  }
+
   return (
     <div className={styles.readerProfile}>
       <ReaderNav />
-      
+
       <main className={styles.main}>
         <div className={styles.container}>
           {/* Profile Header */}
@@ -93,9 +142,9 @@ function ReaderProfile() {
                 <div className={styles.avatar}>
                   <span className={styles.avatarText}>AJ</span>
                 </div>
-                <button className={styles.changeAvatarBtn}>Change Photo</button>
+
               </div>
-              
+
               <div className={styles.userDetails}>
                 {isEditing ? (
                   <div className={styles.editForm}>
@@ -136,7 +185,7 @@ function ReaderProfile() {
                     </div>
                   </div>
                 )}
-                
+
                 <div className={styles.profileActions}>
                   {isEditing ? (
                     <div className={styles.editActions}>
@@ -226,8 +275,8 @@ function ReaderProfile() {
                           <p className={styles.bookAuthor}>by {book.author}</p>
                           <div className={styles.progressContainer}>
                             <div className={styles.progressBar}>
-                              <div 
-                                className={styles.progressFill} 
+                              <div
+                                className={styles.progressFill}
                                 style={{ width: `${book.progress}%` }}
                               ></div>
                             </div>
@@ -273,10 +322,10 @@ function ReaderProfile() {
                 <h2 className={styles.sectionTitle}>Achievements</h2>
                 <div className={styles.achievementsGrid}>
                   {achievements.map((achievement, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={`${styles.achievementCard} ${achievement.unlocked ? styles.unlocked : styles.locked}`}
-                      data-aos="fade-up" 
+                      data-aos="fade-up"
                       data-aos-delay={400 + index * 100}
                     >
                       <div className={styles.achievementIcon}>{achievement.icon}</div>
@@ -304,26 +353,50 @@ function ReaderProfile() {
                     </div>
                   </div>
 
+
                   <div className={styles.settingGroup}>
-                    <h3 className={styles.settingTitle}>Notifications</h3>
-                    <div className={styles.notificationSettings}>
-                      <label className={styles.checkboxLabel}>
-                        <input type="checkbox" defaultChecked />
-                        <span className={styles.checkmark}></span>
-                        Email notifications for new books
-                      </label>
-                      <label className={styles.checkboxLabel}>
-                        <input type="checkbox" defaultChecked />
-                        <span className={styles.checkmark}></span>
-                        Reading reminders
-                      </label>
-                      <label className={styles.checkboxLabel}>
-                        <input type="checkbox" />
-                        <span className={styles.checkmark}></span>
-                        Marketing emails
-                      </label>
-                    </div>
+                    <span className={styles.editBtn} style={{ width: '120px' }}>Coins : {coins}</span>
+
+                    {!isWd && <button
+                      className={styles.editBtn}
+                      style={{ margin: '0px 8px' }}
+                      onClick={() => { setIsAdding(true) }}
+                    >Add More</button>}
+                    {isAdding &&
+                      <div style={{margin:'15px 0px',display:'flex',gap:'5px',width:'500px'}}>
+                        <input type="text" placeholder='Enter No of ethers' className={styles.searchInput}/>
+                        <button 
+                          className={styles.primaryBtn}
+                          onClick={getCoins}
+                          ref={getCoinsChange}
+
+                        >Change</button>
+                        <button className={styles.secondaryBtn} onClick={()=>{setIsAdding(false)}}>Cancel</button>
+                      </div>
+                    }
+
+                    {!isAdding && <button
+                      className={styles.editBtn}
+                      style={{ margin: '0px 8px' }}
+                      onClick={()=>{setIsWd(true)}}
+                    >With Draw</button>}
+
+                    {isWd &&
+                      <div style={{margin:'15px 0px',display:'flex',gap:'5px',width:'500px'}}>
+                        <input type="text" 
+                          placeholder='Enter No coins' 
+                          className={styles.searchInput}
+                          ref={getEthers}
+                        />
+                        <button 
+                          className={styles.primaryBtn}
+                          onClick={handleWithDraw}
+                        >WithDraw</button>
+                        <button className={styles.secondaryBtn} onClick={()=>{setIsWd(false)}}>Cancel</button>
+                      </div>
+                    }
                   </div>
+
 
                   <div className={styles.settingGroup}>
                     <h3 className={styles.settingTitle}>Privacy</h3>

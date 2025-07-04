@@ -5,12 +5,15 @@ import toast from 'react-hot-toast';
 import { ethers } from "ethers";
 import { useEffect,useState } from 'react';
 import { handleGetCoins } from '../helper/clickFunctions.js';
+import { useRef } from 'react';
 
 function Header() {
     const userData=useSelector(state=>state.userdata.address)
     const dispatch = useDispatch();
     const isConnected = useSelector(state => state.connect.isConnected);
     const [openBuy,setOpenBuy]=useState(false);
+    const Coins=useRef();
+
     async function handleConnect() {
         async function connectWallet() {
             if (!window.ethereum) {
@@ -24,15 +27,22 @@ function Header() {
             const address = await signer.getAddress();
             // console.log(signer+"  ");
             dispatch(userdata.setData({address: address }));
-            // const vard=useSelector(state=>state.userdata.data);
+            const vard=useSelector(state=>state.userdata.data);
             dispatch(connectionActions.connect());
             toast.success("Connected to wallet successfully");
         }
         await connectWallet();
     }
-    async function handleBuy(){
-        
+
+    async function handleBuy() {
+        const coins=Coins.current.value;
+        let result=await handleGetCoins(coins);
+        if(result) toast.success("Purchased "+coins+" successfully");
+        else {
+            toast.error("Purchase Failed");
+        }
     }
+
     useEffect(()=>{console.log(userData)},[userData]);
     return (
         <header className={styles.header}>
@@ -63,6 +73,7 @@ function Header() {
                                 type="text" 
                                 placeholder='Enter Number of V'
                                 className={styles.searchInput}
+                                ref={Coins}
                             />
                             <button 
                                 className={styles.signupBtn} 

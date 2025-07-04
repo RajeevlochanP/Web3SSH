@@ -3,20 +3,33 @@ export async function handleGetCoins(cost) {
         const { contract } = await getCoinsContract();
         const tx = await contract.getCoins({ value: ethers.parseEther(`${cost}`) });
         await tx.wait();
-        alert("Coins bought successfully!");
+        return '';
     } catch (err) {
-        console.error("Error buying coins:", err);
-        alert("Transaction failed. See console for details.");
+        console.error("Error buying coins:", err.message);
+        return err.message;
     }
 }
-async function checkBalance() {
+
+export async function checkBalance() {
     try {
         const { contract, signer } = await getCoinsContract();
         const userAddress = await signer.getAddress();
         const bal = await contract.balanceOf(userAddress);
-        setBalance(ethers.formatEther(bal));
+        return bal;
     } catch (err) {
         console.error("Error checking balance:", err);
-        alert("Failed to fetch balance.");
+        return -1
+    }
+}
+
+export async function withdraw(coins){
+    try {
+        const { contract } = await getCoinsContract();
+        // const userAddress = await signer.getAddress();
+        await contract.withdrawCoin(coins);
+        return '';
+    } catch (err) {
+        console.error("Error withdrawing balance:", err.message);
+        return err.message
     }
 }
