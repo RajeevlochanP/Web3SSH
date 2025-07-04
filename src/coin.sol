@@ -4,10 +4,12 @@ pragma solidity 0.8.30;
 import "forge-std/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 
 contract Coins is ERC20, Ownable {
 
     // uint256 public constant INITIAL_SUPPLY = 1e27;
+    IERC1155 public StorageRegistry;
     uint256 public constant weii=3; //for adding coins
     uint256 public constant weif=4; // for withdrawing 
     uint256 public constant MINIMUM_STAKE_VALUE=1000;
@@ -19,12 +21,13 @@ contract Coins is ERC20, Ownable {
     event unStaked(address user, uint256 amount);
 
     constructor() ERC20("COIN", "COIN") Ownable(msg.sender) {
+        // StorageRegistry=IERC1155(StorageRegistryAddr);
         console.log(address(this));
     }
 
     function getCoins() external payable {
-        console.log("msg.value:", msg.value);
-        console.log("will mint:", msg.value * weii);
+        // console.log("msg.value:", msg.value);
+        // console.log("will mint:", msg.value * weii);
         uint amount=msg.value*weii;
         // require(balanceOf(address(this))>=amount,"Insufficient amount in contract");
         _mint(msg.sender, amount);
@@ -42,19 +45,20 @@ contract Coins is ERC20, Ownable {
     }
 
     //ragavan use these functions for node operators staking
-    function stake(uint amount) external{
-        require(amount>=MINIMUM_STAKE_VALUE,"minimum stake value");
-        _transfer(msg.sender,address(this) ,amount);
-        stakedAmounts[msg.sender]+=amount;
-        emit staked(msg.sender, amount);
-    }
+    // function stake(uint amount) external{
+    //     require(amount>=MINIMUM_STAKE_VALUE,"minimum stake value");
+    //     _transfer(msg.sender,address(this) ,amount);
+    //     stakedAmounts[msg.sender]+=amount;
+    //     emit staked(msg.sender, amount);
+    // }
 
-    function unStake() external{
-        // require(amount>=MINIMUM_STAKE_VALUE,"minimum stake value is 1000");
-        _transfer(address(this),msg.sender,stakedAmounts[msg.sender]);
-        emit unStaked(msg.sender, stakedAmounts[msg.sender]);
-        stakedAmounts[msg.sender]=0;
-    }
+    // function unStake() external{
+    //     // require(amount>=MINIMUM_STAKE_VALUE,"minimum stake value is 1000");
+    //     require(!StorageRegistry.nodes(msg.sender).isActive,"Only after unregistering as node you can unstake");
+    //     _transfer(address(this),msg.sender,stakedAmounts[msg.sender]);
+    //     stakedAmounts[msg.sender]=0;
+    //     emit unStaked(msg.sender, stakedAmounts[msg.sender]);
+    // }
     
     fallback() external payable {}
     receive() external payable {}
