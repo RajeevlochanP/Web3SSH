@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console.sol";
 
-contract StorageRegistry is ERC1155, Ownable {
+contract StorageRegistry is Ownable {
     IERC20 public coins; 
     uint256 public constant MINIMUM_STAKE = 1000; 
 
@@ -43,7 +43,7 @@ contract StorageRegistry is ERC1155, Ownable {
     event FileConfirmed(uint256 indexed tokenId, address indexed user);
 
 
-    constructor(address _tokenAddress) ERC1155("StorageNodeFile") Ownable(msg.sender) {
+    constructor(address _tokenAddress) Ownable(msg.sender) {
         coins = IERC20(_tokenAddress);
     }
 
