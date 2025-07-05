@@ -5,9 +5,11 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console.sol";
+import "./bookAccess.sol";
 
 contract StorageRegistry is Ownable {
     IERC20 public coins; 
+    BookAccess public bookAccess;
     uint256 public constant MINIMUM_STAKE = 1000; 
 
     struct StorageNode {
@@ -43,8 +45,9 @@ contract StorageRegistry is Ownable {
     event FileConfirmed(uint256 indexed tokenId, address indexed user);
 
 
-    constructor(address _tokenAddress) Ownable(msg.sender) {
+    constructor(address _tokenAddress, address _bookAccess) Ownable(msg.sender) {
         coins = IERC20(_tokenAddress);
+        bookAccess = BookAccess(_bookAccess);
     }
 
     function registerNode(string memory _url, uint256 _maxStorage) external {
@@ -102,6 +105,10 @@ contract StorageRegistry is Ownable {
         require(bytes(fileLocation[_tokenId].cid).length > 0, "File not stored");
         require(msg.sender == fileLocation[_tokenId].nodeAddress, "Only assigned node can serve");
 
+        if (!bookAccess.isAllowed(_tokenId, _user)) {
+           return false;
+        }
+
         transmissions[_tokenId] = Transmission({
             user: _user,
             isRequested: true,
@@ -125,4 +132,5 @@ contract StorageRegistry is Ownable {
     function isFileConfirmed(uint256 _tokenId, address _user) external view returns (bool) {
         return transmissions[_tokenId].isConfirmed && transmissions[_tokenId].user == _user;
     }
+
 }
