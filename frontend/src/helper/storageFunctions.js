@@ -13,9 +13,10 @@ export async function getAllNodes() {
         bool isActive;
     }
     */
+    const mappedNodes = storageNodes.map(([nodeAddress, url, maxStorage, stakedAmount, isActive]) => ({
+    nodeAddress, url, maxStorage, stakedAmount, isActive}));
 
-
-    return storageNodes;
+    return mappedNodes;
 }
 
 export async function getAllBooks() {

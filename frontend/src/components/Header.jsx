@@ -25,7 +25,7 @@ function Header() {
             await provider.send("eth_requestAccounts", []);
             const signer = await provider.getSigner();
             const address = await signer.getAddress();
-            // console.log(signer+"  ");
+            console.log(address+" dsf ");
             dispatch(userdata.setData({address: address }));
             // const vard=useSelector(state=>state.userdata.data);
             dispatch(connectionActions.connect());

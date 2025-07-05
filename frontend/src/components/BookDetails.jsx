@@ -6,8 +6,10 @@ import styles from '../styles/BookDetails.module.css'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { isBought } from '../helper/clickFunctions'
+import { useSelector } from 'react-redux'
 
 function BookDetails() {
+    const books=useSelector(state=>state.booksData.books);
     const [selectedFormat, setSelectedFormat] = useState('pdf')
     const [quantity, setQuantity] = useState(1)
     const [isWishlisted, setIsWishlisted] = useState(false)
@@ -28,9 +30,18 @@ function BookDetails() {
         async function getBookData() {
             try {
                 console.log("id: ",id);
-                let result=await getBookById(id);
-                setBook(result);
+                console.log("dfj :"+books);
+                for(let i=0;i<books.length;i++) {
+                    let book=books[i];
+                    if(book.tokenId===id) {
+                        console.log(book);
+                        setBook(book);
+                        break;
+                    }
+                }
+                // console.log("comple");
                 let own=await isBought(id);
+                console.log(own);
                 if(own) {
                     setIsOwned(true);
                 }
@@ -40,6 +51,10 @@ function BookDetails() {
         }
         getBookData();
     }, [])
+
+    useEffect(()=>{
+        console.log(book);
+    },[book])
 
     // Sample book data - in real app this would come from props or API
     // const book = {
@@ -203,7 +218,7 @@ function BookDetails() {
                                     <span className={styles.priceLabel}>Digital Edition</span>
                                 </div>
 
-                                <div className={styles.formatSelector}>
+                                {/* <div className={styles.formatSelector}>
                                     <label className={styles.formatLabel}>Format:</label>
                                     <div className={styles.formatOptions}>
                                         {book.formats.map(format => (
@@ -217,7 +232,7 @@ function BookDetails() {
                                             </button>
                                         ))}
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className={styles.actionButtons}>
@@ -281,7 +296,7 @@ function BookDetails() {
 
                                     <h4 className={styles.featuresTitle}>Key Features</h4>
                                     <ul className={styles.featuresList}>
-                                        {book.features.map((feature, index) => (
+                                        {dummy.features.map((feature, index) => (
                                             <li key={index} className={styles.featureItem}>
                                                 <span className={styles.featureIcon}>✓</span>
                                                 {feature}
@@ -295,7 +310,7 @@ function BookDetails() {
                                 <div className={styles.contentsTab} data-aos="fade-in">
                                     <h3 className={styles.tabTitle}>Table of Contents</h3>
                                     <div className={styles.chapterList}>
-                                        {book.tableOfContents.map((chapter, index) => (
+                                        {dummy.tableOfContents.map((chapter, index) => (
                                             <div key={index} className={styles.chapterItem}>
                                                 <span className={styles.chapterNumber}>{String(index + 1).padStart(2, '0')}</span>
                                                 <span className={styles.chapterTitle}>{chapter}</span>
@@ -314,7 +329,7 @@ function BookDetails() {
                                         </div>
                                         <div className={styles.authorDetails}>
                                             <h4 className={styles.authorName}>{book.author}</h4>
-                                            <p className={styles.authorBio}>{book.authorBio}</p>
+                                            <p className={styles.authorBio}>{dummy.authorBio}</p>
                                         </div>
                                     </div>
                                 </div>

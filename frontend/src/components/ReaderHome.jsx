@@ -25,7 +25,9 @@ function ReaderHome() {
                 let result=await getAllBooks();
                 // console.log("fdjds :"+ result);
                 if(result.length>0){
-                dispatch(booksActions.setBooks(result));
+                    console.log(result);
+                    dispatch(booksActions.setBooks({booksData:result}));
+                    
                 }
             } catch (error) {
                 console.log(error);
@@ -34,6 +36,9 @@ function ReaderHome() {
         }
         fetchBooks();
     }, [])
+    useEffect(()=>{
+        console.log(books);
+    },[books])
 
     const featuredBooks = [
         {
@@ -172,7 +177,7 @@ function ReaderHome() {
                         </div>
 
                         <div className={styles.booksGrid}>
-                            {books.map((book, index) => (
+                            {books && books.map((book, index) => (
                                 <article
                                     key={book.tokenId}
                                     className={styles.bookCard}
@@ -206,7 +211,7 @@ function ReaderHome() {
                                         <p className={styles.bookDescription}>{book.description}</p>
 
                                         <div className={styles.bookFooter}>
-                                            <div className={styles.bookPrice}>{book.price}</div>
+                                            <div className={styles.bookPrice}>{parseFloat(book.price).toFixed(0)}</div>
                                             <Link to={`/r/bookdet/${book.tokenId}`}>
                                                 <button className={styles.exploreButton}>Explore</button>
                                             </Link>

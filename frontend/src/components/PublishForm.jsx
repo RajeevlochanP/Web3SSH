@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import styles from '../styles/PublishForm.module.css'
+import { getAllNodes, registeNode } from '../helper/storageFunctions'
+import { registerBook,registerBookPipeline } from '../helper/clickFunctions'
 
 function PublishForm() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,7 @@ function PublishForm() {
     genre: '',
     price: '',
     selectedNode: '',
+    tokenId:'',
     file: null
   })
   
@@ -17,6 +20,7 @@ function PublishForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
+  const [avaNodes,setAvaNodes]=useState([]);
 
   useEffect(() => {
     AOS.init({
@@ -25,7 +29,17 @@ function PublishForm() {
       once: true,
       offset: 100
     })
+    async function forNodes() {
+      let avaNodes=await getAllNodes();
+      console.log(avaNodes);
+      setAvaNodes(avaNodes);
+    }
+    forNodes();
   }, [])
+
+  useEffect(()=>{
+    console.log("avaNodes: ",avaNodes);
+  },[avaNodes])
 
   const genres = [
     'Technology',
@@ -225,17 +239,19 @@ function PublishForm() {
     }
 
     setIsSubmitting(true)
-
+    
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      console.log(formData);
+      registerBookPipeline(formData);
+      // // Simulate API call
+      // await new Promise(resolve => setTimeout(resolve, 2000))
       
-      // Here you would typically upload the file and submit the form data
-      const selectedNodeData = availableNodes.find(node => node.id === formData.selectedNode)
-      console.log('Publishing book:', {
-        ...formData,
-        selectedNodeData
-      })
+      // // Here you would typically upload the file and submit the form data
+      // const selectedNodeData = availableNodes.find(node => node.id === formData.selectedNode)
+      // console.log('Publishing book:', {
+      //   ...formData,
+      //   selectedNodeData
+      // })
       
       // Reset form on success
       setFormData({
@@ -385,32 +401,32 @@ function PublishForm() {
                     </div>
                     
                     <div className={styles.nodeGrid}>
-                      {availableNodes.map((node) => (
+                      {avaNodes.map((node) => (
                         <div
-                          key={node.id}
-                          className={`${styles.nodeCard} ${formData.selectedNode === node.id ? styles.selected : ''}`}
-                          onClick={() => handleNodeSelection(node.id)}
+                          key={node.nodeAddress}
+                          className={`${styles.nodeCard} ${formData.selectedNode === node.nodeAddress ? styles.selected : ''}`}
+                          onClick={() => handleNodeSelection(node.nodeAddress)}
                         >
                           <div className={styles.nodeHeader}>
                             <input
                               type="radio"
-                              id={node.id}
+                              id={node.nodeAddress}
                               name="selectedNode"
-                              value={node.id}
-                              checked={formData.selectedNode === node.id}
-                              onChange={() => handleNodeSelection(node.id)}
+                              value={node.address}
+                              checked={formData.selectedNode === node.nodeAddress}
+                              onChange={() => handleNodeSelection(node.nodeAddress)}
                               className={styles.nodeRadio}
                             />
                             <div className={styles.nodeStatus}>
                               <div className={`${styles.statusIndicator} ${styles.active}`}></div>
-                              <span className={styles.statusText}>{node.status}</span>
+                              <span className={styles.statusText}>{node.isActive}</span>
                             </div>
                           </div>
                           
                           <div className={styles.nodeInfo}>
                             <div className={styles.nodeAddress}>
                               <span className={styles.addressLabel}>Node Address:</span>
-                              <span className={styles.addressValue}>{node.address}</span>
+                              <span className={styles.addressValue}>{node.nodeAddress}</span>
                             </div>
                             
                             <div className={styles.nodeDetails}>
@@ -418,7 +434,7 @@ function PublishForm() {
                                 <span className={styles.detailIcon}>💾</span>
                                 <div className={styles.detailInfo}>
                                   <span className={styles.detailLabel}>Max Storage</span>
-                                  <span className={styles.detailValue}>{node.maxStorage}</span>
+                                  <span className={styles.detailValue}>{parseFloat(node.maxStorage).toFixed(0)}</span>
                                 </div>
                               </div>
                               
@@ -426,7 +442,7 @@ function PublishForm() {
                                 <span className={styles.detailIcon}>🌍</span>
                                 <div className={styles.detailInfo}>
                                   <span className={styles.detailLabel}>Location</span>
-                                  <span className={styles.detailValue}>{node.location}</span>
+                                  <span className={styles.detailValue}>{"New York"}</span>
                                 </div>
                               </div>
                               
@@ -434,15 +450,15 @@ function PublishForm() {
                                 <span className={styles.detailIcon}>⚡</span>
                                 <div className={styles.detailInfo}>
                                   <span className={styles.detailLabel}>Speed</span>
-                                  <span className={styles.detailValue}>{node.speed}</span>
+                                  <span className={styles.detailValue}>{"High"}</span>
                                 </div>
                               </div>
                               
                               <div className={styles.nodeDetail}>
-                                <span className={styles.detailIcon}>🛡️</span>
+                                <span className={styles.detailIcon}>🛡</span>
                                 <div className={styles.detailInfo}>
                                   <span className={styles.detailLabel}>Reliability</span>
-                                  <span className={styles.detailValue}>{node.reliability}</span>
+                                  <span className={styles.detailValue}>{"Medium"}</span>
                                 </div>
                               </div>
                             </div>
@@ -513,7 +529,7 @@ function PublishForm() {
                 </div>
 
                 {/* Form Actions */}
-                <div className={styles.formActions} data-aos="fade-up" data-aos-delay="600">
+                <div className={styles.formActions} >
                   <button
                     type="button"
                     className={styles.cancelBtn}

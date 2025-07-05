@@ -1,5 +1,6 @@
-import { getCoinsContract,getBookAccessCOntract } from "./contractHelper";
+import { getCoinsContract,getBookAccessCOntract,getStorageRegistryContract } from "./contractHelper";
 import { ethers } from "ethers";
+import { getAllNodes } from "./storageFunctions";
 const StorageRegistryAddress = import.meta.env.VITE_STORAGE_REGISTRY_ADDR;
 export async function handleGetCoins(cost) {
     try {
@@ -64,6 +65,8 @@ export async function getAllBooks(){
     const {contract,signer}=await getBookAccessCOntract();
     // console.log("fjdkl");
     const books=await contract.getAllBooks();
+    const mappedBooks = books.map(([name, description, genre, price, author,_,tokenId]) => ({
+    name,description,author,genre,price,tokenId}));
     /*
     books is an array of  {
         string name;
@@ -75,7 +78,7 @@ export async function getAllBooks(){
         uint tokenId;
     }
     */
-    return books;
+    return mappedBooks;
     // ee function call try catch lo undali 
 }
 
@@ -95,11 +98,49 @@ export async function isBought(tokenId){
 export async function registerBook(name, desc, price, genre, author) {
   try {
     const { contract, signer } = await getBookAccessCOntract();
-    const tx = await contract.register(name, desc, price, genre, author, tokenId);
+    const tx = await contract.register(name, desc, price, genre, author);
     await tx.wait();
-    alert("Book registered successfully!");
+    const token=await contract.getNextTokenId();
+    // console.log(token);
+    // alert("Book registered successfully!");
+    token=parseFloat(token).toFixed(0)-1;
   } catch (err) {
     console.error("Error registering book:", err);
-    alert("Book registration failed.");
+    // alert("Book registration failed.");
   }
+}
+
+export async function registerBookPipeline(formData){
+    const { contract, signer } = await getBookAccessCOntract();
+    const author=await signer.getAddress();
+    console.log(author+": autor "+"form Daata : "+formData);
+    
+    const {name, description, price, genre,selectedNode}=formData;
+    console.log(name, description, price, genre,selectedNode);
+    const tx = await contract.register(name, description, price, genre, author);
+    console.log("hii");
+    await tx.wait();
+    let token=await contract.getNextTokenId();
+    // console.log(token);
+    // alert("Book registered successfully!");
+    token=parseFloat(token).toFixed(0)-1;
+    const nodess=await getAllNodes();
+    console.log(nodess);
+    const node=nodess.find(nod=>nod.nodeAddress==selectedNode);
+    console.log(node);
+    const dat = await getStorageRegistryContract();
+    const t = await dat.contract.assignNode(token,node.nodeAddress, 256);
+    await t.wait();
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", formData.file);
+    uploadFormData.append("tokenId", token.toString());
+    console.log(uploadFormData.tokenId,uploadFormData.file);
+    console.log(node.url);
+
+    const response = await fetch(`${node.url}/store`, {
+      method: "POST",
+      body: uploadFormData,
+    });
+
+    const data = await response.json();
 }
