@@ -54,7 +54,7 @@ function App() {
                     element:<ReaderLib />
                 },
                 {
-                    path:'bookdet',
+                    path:'bookdet/:id',
                     element:<BookDetails />
                 }
             ]

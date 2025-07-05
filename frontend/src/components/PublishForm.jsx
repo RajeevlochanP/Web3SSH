@@ -274,30 +274,6 @@ function PublishForm() {
 
   return (
     <div className={styles.publishForm}>
-      <header className={styles.header}>
-        <div className={styles.container}>
-          <div className={styles.logo}>
-            <div className={styles.logoIcon}>📚</div>
-            <span className={styles.brandName}>BookChain</span>
-            <span className={styles.publisherBadge}>Publisher</span>
-          </div>
-          
-          <nav className={styles.nav}>
-            <a href="#dashboard" className={styles.navLink}>Dashboard</a>
-            <a href="#publications" className={styles.navLink}>Publications</a>
-            <a href="#publish" className={styles.navLink}>Publish</a>
-            <a href="#analytics" className={styles.navLink}>Analytics</a>
-          </nav>
-
-          <div className={styles.userSection}>
-            <div className={styles.userProfile}>
-              <div className={styles.avatar}>👤</div>
-              <span className={styles.userName}>Publisher</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
       <main className={styles.main}>
         <div className={styles.container}>
           {/* Page Header */}

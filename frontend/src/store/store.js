@@ -25,10 +25,26 @@ const userSlice=createSlice({
     }
 })
 
+const bookSlice=createSlice({
+    name:'books',
+    initialState:{books:[]},
+    reducers:{
+        setBooks(state,action) {
+            const {booksData}=action.payload;
+            state.books=booksData;
+        }
+    }
+});
+
 const store=configureStore({
-    reducer:{connect:connectionSlice.reducer,userdata:userSlice.reducer}
+    reducer:{
+        connect:connectionSlice.reducer,
+        userdata:userSlice.reducer,
+        booksData:bookSlice.reducer
+    }
 })
 
 export const connectionActions=connectionSlice.actions;
 export const userdata=userSlice.actions;
+export const booksActions=bookSlice.actions;
 export default store;

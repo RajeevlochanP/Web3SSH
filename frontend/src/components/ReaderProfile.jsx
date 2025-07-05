@@ -12,7 +12,7 @@ function ReaderProfile() {
   const [isEditing, setIsEditing] = useState(false)
   const [isAdding, setIsAdding] = useState(false);
   const [isWd, setIsWd] = useState(false);
-  const [coins,setCoins]=useState(0); 
+  const [coins,setCoins]=useState(0);
   const getCoinsChange=useRef();
   const getEthers=useRef();
 
@@ -35,13 +35,8 @@ function ReaderProfile() {
     async function fetch() {
       let result=await checkBalance();
       // result.wait();
-      console.log(result);
-      if(result>-1) {
-        setCoins(result);
-      }
-      else {
-        toast.error("Error while fetching balance");
-      }
+      // console.log("fjd : "+result);
+      setCoins(result);
     }
     fetch();
   }, [])
@@ -102,17 +97,19 @@ function ReaderProfile() {
   }
 
   async function getCoins() {
-    console.log("dsklhf");
+    // console.log("dsklhf");
     let handle=await handleGetCoins(getCoinsChange.current.value);
     // handle.wait();
-    if(handle.length=='done') {
-      toast.success(handle);
+    if(handle!="successfull") {
+      setIsAdding(false);
+      toast.error(handle);
       return ;
     }
     let bal=await checkBalance();
     console.log(bal);
     if(bal>-1) {
       setCoins(bal);
+      toast.success("updated balance successfully");
     }
     else {
       toast.error("Error while fetching balance");
@@ -122,7 +119,8 @@ function ReaderProfile() {
 
   async function handleWithDraw() {
     let handle=await withdraw(getEthers.current.value);
-    if(handle.length<=1) {
+    if(handle!="successfull") {
+      setIsWd(false);
       toast.error(handle);
       return ;
     }
@@ -132,7 +130,8 @@ function ReaderProfile() {
       return ;
     }
     setCoins(bal);
-    toast.success("Fetched balance successfully");
+    setIsWd(false);
+    toast.success("updated balance successfully");
   }
 
   return (
