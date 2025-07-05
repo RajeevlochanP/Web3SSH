@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Coins is ERC20, Ownable {
 
     // uint256 public constant INITIAL_SUPPLY = 1e27;
-    IERC1155 public StorageRegistry;
+    // IERC1155 public StorageRegistry;
     uint256 public constant weii=3; //for adding coins
     uint256 public constant weif=4; // for withdrawing 
     uint256 public constant MINIMUM_STAKE_VALUE=1000;

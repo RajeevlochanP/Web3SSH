@@ -6,7 +6,7 @@ export async function handleGetCoins(cost) {
         const { contract } = await getCoinsContract();
         const tx = await contract.getCoins({ value: ethers.parseEther(cost) });
         await tx.wait();
-        return '';
+        return "successfull";
     } catch (err) {
         console.error("Error buying coins:", err.message);
         return err.message;
@@ -17,8 +17,8 @@ export async function checkBalance() {
     try {
         const { contract, signer } = await getCoinsContract();
         const userAddress = await signer.getAddress();
-        const bal = await contract.balanceOf(userAddress);
-        return bal;
+        const bal = await contract.balanceOf(userAddress); // likely BigNumber
+        return parseFloat(bal).toFixed(0); // return as number
     } catch (err) {
         console.error("Error checking balance:", err);
         return -1;
@@ -27,13 +27,16 @@ export async function checkBalance() {
 
 export async function withdraw(coins){
     try {
+        console.log("coins : "+coins);
         const { contract } = await getCoinsContract();
         // const userAddress = await signer.getAddress();
-        await contract.withdrawCoin(coins);
-        return '';
+        const tx=await contract.withdrawCoin(coins);
+        tx.wait();
+        return "successfull";
     } catch (err) {
+        console.log("fdhjfd sdfjksdf dsfjk");
         console.error("Error withdrawing balance:", err.message);
-        return err.message
+        return err.message;
     }
 }
 
