@@ -11,8 +11,10 @@ contract StorageRegistry is Ownable {
     IERC20 public coins; 
     BookAccess public bookAccess;
     uint256 public constant MINIMUM_STAKE = 1000; 
+    uint256 public totalRewardableWork;
 
     struct StorageNode {
+        address nodeAddress;
         string url; 
         uint256 maxStorage; 
         uint256 stakedAmount; 
@@ -35,7 +37,11 @@ contract StorageRegistry is Ownable {
     mapping(address => StorageNode) public nodes; 
     mapping(uint256 => FileLocation) public fileLocation;
     mapping(uint256 => Transmission) public transmissions; 
+    mapping(address => uint256) public nodeWork;
+    mapping(address => uint256[]) public nodeToFiles;
     address[] public nodeAddresses;
+    uint256[] public assignedTokenIds;
+
 
 
     event NodeRegistered(address indexed nodeAddress, string url, uint256 maxStorage, uint256 stakedAmount);
@@ -59,6 +65,7 @@ contract StorageRegistry is Ownable {
         require(coins.transferFrom(msg.sender, address(this), MINIMUM_STAKE), "Stake transfer failed");
 
         nodes[msg.sender] = StorageNode({
+            nodeAddress: msg.sender, 
             url: _url,
             maxStorage: _maxStorage,
             stakedAmount: MINIMUM_STAKE,
@@ -81,6 +88,7 @@ contract StorageRegistry is Ownable {
             fileSize: _fileSize
         });
 
+        assignedTokenIds.push(_tokenId);
         emit FileAssigned(_tokenId, msg.sender, _nodeAddress, nodes[_nodeAddress].url);
     }
 
@@ -94,7 +102,7 @@ contract StorageRegistry is Ownable {
         // Update CID
         fileLocation[_tokenId].cid = _cid;
         nodes[msg.sender].maxStorage -= fileLocation[_tokenId].fileSize;
-
+        nodeToFiles[msg.sender].push(_tokenId);
         emit FileVerified(_tokenId, _cid);
         return true;
     }
@@ -105,7 +113,7 @@ contract StorageRegistry is Ownable {
         require(bytes(fileLocation[_tokenId].cid).length > 0, "File not stored");
         require(msg.sender == fileLocation[_tokenId].nodeAddress, "Only assigned node can serve");
 
-        if (!bookAccess.isAllowed(_tokenId, _user)) {
+        if (!bookAccess.isAllowed(_user, _tokenId)) {
            return false;
         }
 
@@ -123,14 +131,48 @@ contract StorageRegistry is Ownable {
     function confirmFile(uint256 _tokenId) external {
         require(transmissions[_tokenId].isRequested, "No transmission requested");
         require(msg.sender == transmissions[_tokenId].user, "Only requested user can confirm");
+        require(!transmissions[_tokenId].isConfirmed, "Already confirmed");
 
         transmissions[_tokenId].isConfirmed = true;
+
+        address node = fileLocation[_tokenId].nodeAddress;
+        uint256 fileSize = fileLocation[_tokenId].fileSize;
+
+        uint256 rewardWork = fileSize;  
+        nodeWork[node] += rewardWork;
+        totalRewardableWork += rewardWork;
 
         emit FileConfirmed(_tokenId, msg.sender);
     }
 
     function isFileConfirmed(uint256 _tokenId, address _user) external view returns (bool) {
         return transmissions[_tokenId].isConfirmed && transmissions[_tokenId].user == _user;
+    }
+
+    function getAllNodes() external view returns (StorageNode[] memory) {
+            uint length = nodeAddresses.length;
+            StorageNode[] memory allNodes = new StorageNode[](length);
+            for (uint256 i = 0; i < length; i++) {
+                allNodes[i] = nodes[nodeAddresses[i]];
+            }
+            return allNodes;
+        }
+
+    function getAllBooks() external view returns (uint256[] memory, FileLocation[] memory) {
+        uint length = assignedTokenIds.length;
+        FileLocation[] memory files = new FileLocation[](length);
+        for (uint256 i = 0; i < length; i++) {
+            files[i] = fileLocation[assignedTokenIds[i]];
+        }
+        return (assignedTokenIds, files);
+    }
+
+    function getFilesForNode() external view returns (uint256[] memory) {
+        return nodeToFiles[msg.sender];
+    }
+
+    function getFileLocation(uint256 _tokenId) external view returns (FileLocation memory) {
+        return fileLocation[_tokenId];
     }
 
 }
