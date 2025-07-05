@@ -22,7 +22,6 @@ contract BookAccess is ERC1155, Ownable {
         address author;
         bool isActive;
         uint tokenId;  //uneccesary but i cant think of other way now
-        string cid;
     }
 
     mapping(uint => BookMetaData) public bookMetaDatas; // tokenId → metadata
@@ -35,8 +34,7 @@ contract BookAccess is ERC1155, Ownable {
         uint _price,
         string memory _genre,
         address _author,
-        uint _tokenId,
-        string memory _cid
+        uint _tokenId
     ) external returns (uint) {
         allTokens.push(_tokenId);
         bookMetaDatas[_tokenId] = BookMetaData({
@@ -46,8 +44,7 @@ contract BookAccess is ERC1155, Ownable {
             price: _price,
             author: msg.sender,
             isActive: true,
-            tokenId: _tokenId,
-            cid: _cid
+            tokenId: _tokenId
         });
 
         booksByAuthor[msg.sender].push(_tokenId);

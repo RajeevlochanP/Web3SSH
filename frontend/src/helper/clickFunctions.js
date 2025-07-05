@@ -70,3 +70,15 @@ export async function isBought(tokenId){
     const user = await signer.getAddress();
     return await contract.isAllowed(user,tokenId);
 }
+
+export async function registerBook(name, desc, price, genre, author, tokenId) {
+  try {
+    const { contract, signer } = await getBookAccessCOntract();
+    const tx = await contract.register(name, desc, price, genre, author, tokenId);
+    await tx.wait();
+    alert("Book registered successfully!");
+  } catch (err) {
+    console.error("Error registering book:", err);
+    alert("Book registration failed.");
+  }
+}
