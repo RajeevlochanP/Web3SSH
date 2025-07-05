@@ -4,12 +4,14 @@ import ReaderLayout from './components/ReaderLayout.jsx'
 import RootLayout from './components/RootLayout'
 import PublisherHome from './pages/PublisherHome.jsx'
 import PublishPage from './pages/PublishPage'
+import PublishForm from './components/PublishForm.jsx'
 import PublisherProfile from './pages/PublisherProfile'
 import ReaderHome from './components/ReaderHome'
 import ReaderProfile from './components/ReaderProfile'
 import ReaderLib from './components/ReaderLib.jsx'
 import Hero from './pages/Hero'
 import { Toaster } from 'react-hot-toast'
+import BookDetails from './components/BookDetails.jsx'
 
 function App() {
     const router = createBrowserRouter([
@@ -27,7 +29,7 @@ function App() {
                 },
                 {
                     path:'publish/new',
-                    element:<PublishPage />
+                    element:<PublishForm />
                 },
                 {
                     path:'publications',
@@ -50,6 +52,10 @@ function App() {
                 {
                     path:'library',
                     element:<ReaderLib />
+                },
+                {
+                    path:'bookdet/:id',
+                    element:<BookDetails />
                 }
             ]
         }

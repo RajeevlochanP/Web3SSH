@@ -13,6 +13,19 @@ export async function handleGetCoins(cost) {
     }
 }
 
+// export async function checkBalance() {
+//     try {
+//         const { contract, signer } = await getCoinsContract();
+//         const userAddress = await signer.getAddress();
+//         const bal = await contract.balanceOf(userAddress);
+//         return bal;
+//     } catch (err) {
+//         console.error("Error checking balance:", err);
+//         return -1
+//     }
+// }
+
+//Updated checkBalance()
 export async function checkBalance() {
     try {
         const { contract, signer } = await getCoinsContract();
