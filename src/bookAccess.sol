@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console.sol";
 
 contract BookAccess is ERC1155, Ownable {
-    uint public nextTokenId;
 
     IERC20 public coins;
 
@@ -18,38 +17,63 @@ contract BookAccess is ERC1155, Ownable {
     struct BookMetaData {
         string name;
         string description;
-        address author;
+        string genre;
         uint price;
+        address author;
+        bool isActive;
+        uint tokenId; //uneccesary but i cant think of other way now
     }
 
-    mapping(uint => string) public tokenURIs;   // tokenId →  CID
     mapping(uint => BookMetaData) public bookMetaDatas; // tokenId → metadata
-    mapping(address => uint[]) public booksByAuthor; //books by author → tokenIds
+    mapping(address => uint[]) public booksByAuthor;     // author → tokenIds
+    uint[] public allTokens;
 
-    function upload(string memory _cid,string memory _name,string memory _desc,uint _price) external returns (uint tokenId) {
-        tokenId = nextTokenId++;
-        tokenURIs[tokenId] = _cid;
-
-        bookMetaDatas[tokenId] = BookMetaData({
+    function register(
+        string memory _name,
+        string memory _desc,
+        uint _price,
+        string memory _genre,
+        address _author,
+        uint _tokenId
+    ) external returns (uint) {
+        allTokens.push(_tokenId);
+        bookMetaDatas[_tokenId] = BookMetaData({
             name: _name,
             description: _desc,
+            genre: _genre,
+            price: _price,
             author: msg.sender,
-            price: _price
+            isActive: true,
+            tokenId: _tokenId
         });
-        booksByAuthor[msg.sender].push(tokenId);
-        _mint(msg.sender, tokenId,1, "");
+
+        booksByAuthor[msg.sender].push(_tokenId);
+        _mint(_author, _tokenId, 1, "");
+        return _tokenId;
     }
 
-    function buyBook(uint tokenId) external {
-        require(bytes(tokenURIs[tokenId]).length != 0, "Book does not exist");
-        BookMetaData memory book = bookMetaDatas[tokenId];
-        require(coins.balanceOf(msg.sender) >= book.price, "Insufficient token balance");
-        require(coins.transferFrom(msg.sender, book.author, book.price),"Payment failed");
-        _mint(msg.sender, tokenId, 1, "");
+    function getAllBooks() public view returns (BookMetaData[] memory) {
+        uint length = allTokens.length;
+        BookMetaData[] memory books = new BookMetaData[](length);
+        for (uint i = 0; i < length; i++) {
+            books[i] = bookMetaDatas[allTokens[i]];
+        }
+        return books;
     }
 
-    function getBookURI(uint tokenId) external view returns (string memory) {
-        require(balanceOf(msg.sender, tokenId) > 0, "Access denied: Buy the book first");
-        return string(abi.encodePacked("ipfs://", tokenURIs[tokenId]));
+    function buyAccess(uint _tokenId) public {
+        BookMetaData memory b = bookMetaDatas[_tokenId];
+        require(b.isActive, "Book does not exist");
+        require(balanceOf(msg.sender, _tokenId) == 0, "Already have access");
+        require(coins.balanceOf(msg.sender) >= b.price, "Insufficient balance");
+
+        bool success = coins.transferFrom(msg.sender, b.author, b.price);
+        require(success, "Token transfer failed");
+
+        _mint(msg.sender, _tokenId, 1, "");
+    }
+    
+    function isAllowed(address user,uint tokenId) public view returns(bool){
+        return (balanceOf(user,tokenId)>0);
     }
 }

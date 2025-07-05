@@ -34,6 +34,8 @@ function ReaderProfile() {
     })
     async function fetch() {
       let result=await checkBalance();
+      // result.wait();
+      console.log(result);
       if(result>-1) {
         setCoins(result);
       }
@@ -100,13 +102,15 @@ function ReaderProfile() {
   }
 
   async function getCoins() {
-    let cns=getCoinsChange.current.value;
+    console.log("dsklhf");
     let handle=await handleGetCoins(getCoinsChange.current.value);
+    // handle.wait();
     if(handle.length<=1) {
       toast.error(handle);
       return ;
     }
     let bal=await checkBalance();
+    console.log(bal);
     if(bal>-1) {
       setCoins(bal);
     }
@@ -365,11 +369,10 @@ function ReaderProfile() {
                     >Add More</button>}
                     {isAdding &&
                       <div style={{margin:'15px 0px',display:'flex',gap:'5px',width:'500px'}}>
-                        <input type="text" placeholder='Enter No of ethers' className={styles.searchInput}/>
+                        <input type="text" placeholder='Enter No of ethers' className={styles.searchInput} ref={getCoinsChange}/>
                         <button 
                           className={styles.primaryBtn}
                           onClick={getCoins}
-                          ref={getCoinsChange}
 
                         >Change</button>
                         <button className={styles.secondaryBtn} onClick={()=>{setIsAdding(false)}}>Cancel</button>

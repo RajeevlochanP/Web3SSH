@@ -27,7 +27,7 @@ function Header() {
             const address = await signer.getAddress();
             // console.log(signer+"  ");
             dispatch(userdata.setData({address: address }));
-            const vard=useSelector(state=>state.userdata.data);
+            // const vard=useSelector(state=>state.userdata.data);
             dispatch(connectionActions.connect());
             toast.success("Connected to wallet successfully");
         }
@@ -36,6 +36,7 @@ function Header() {
 
     async function handleBuy() {
         const coins=Coins.current.value;
+        console.log("fsdf : "+coins);
         let result=await handleGetCoins(coins);
         if(result) toast.success("Purchased "+coins+" successfully");
         else {
