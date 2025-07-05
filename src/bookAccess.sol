@@ -7,11 +7,12 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "forge-std/console.sol";
 
 contract BookAccess is ERC1155, Ownable {
-
+    uint nextTokenId;
     IERC20 public coins;
 
     constructor(address _tokenAddress) ERC1155("BookId") Ownable(msg.sender) {
         coins = IERC20(_tokenAddress);
+        nextTokenId=0;
     }
 
     struct BookMetaData {
@@ -33,9 +34,10 @@ contract BookAccess is ERC1155, Ownable {
         string memory _desc,
         uint _price,
         string memory _genre,
-        address _author,
-        uint _tokenId
+        address _author
+        // uint _tokenId
     ) external returns (uint) {
+        uint _tokenId=nextTokenId++;
         allTokens.push(_tokenId);
         bookMetaDatas[_tokenId] = BookMetaData({
             name: _name,

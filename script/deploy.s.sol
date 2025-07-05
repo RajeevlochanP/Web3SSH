@@ -26,7 +26,7 @@ contract Deploy is Script {
         bookAccess = new BookAccess(address(coin));
         console.log("BookAccess deployed at:", address(bookAccess));
 
-        storageRegistry = new StorageRegistry(address(bookAccess), address(bookAccess));
+        storageRegistry = new StorageRegistry(address(coin), address(bookAccess));
         console.log("StorageRegistry deployed at:", address(storageRegistry));
 
         vm.stopBroadcast();

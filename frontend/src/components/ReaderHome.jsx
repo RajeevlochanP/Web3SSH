@@ -21,9 +21,14 @@ function ReaderHome() {
         })
         async function fetchBooks() {
             try {
+                // console.log("fdjds");
                 let result=await getAllBooks();
+                // console.log("fdjds :"+ result);
+                if(result.length>0){
                 dispatch(booksActions.setBooks(result));
+                }
             } catch (error) {
+                console.log(error);
                 toast.error("Error Occured while fetching Books")
             }
         }

@@ -1,5 +1,6 @@
 import { getCoinsContract,getBookAccessCOntract } from "./contractHelper";
 import { ethers } from "ethers";
+const StorageRegistryAddress = import.meta.env.VITE_STORAGE_REGISTRY_ADDR;
 export async function handleGetCoins(cost) {
     try {
         // console.log("cost :" + cost);
@@ -38,6 +39,12 @@ export async function checkBalance() {
     }
 }
 
+export async function appr(){
+    const { contract, signer } = await getCoinsContract();
+    const tx = await contract.approve(StorageRegistryAddress, ethers.parseUnits("1000", 18));
+    await tx.wait();
+}
+
 export async function withdraw(coins){
     try {
         console.log("coins : "+coins);
@@ -47,7 +54,7 @@ export async function withdraw(coins){
         tx.wait();
         return "successfull";
     } catch (err) {
-        console.log("fdhjfd sdfjksdf dsfjk");
+        // console.log("fdhjfd sdfjksdf dsfjk");
         console.error("Error withdrawing balance:", err.message);
         return err.message;
     }
@@ -55,6 +62,7 @@ export async function withdraw(coins){
 
 export async function getAllBooks(){
     const {contract,signer}=await getBookAccessCOntract();
+    // console.log("fjdkl");
     const books=await contract.getAllBooks();
     /*
     books is an array of  {
@@ -84,7 +92,7 @@ export async function isBought(tokenId){
     return await contract.isAllowed(user,tokenId);
 }
 
-export async function registerBook(name, desc, price, genre, author, tokenId) {
+export async function registerBook(name, desc, price, genre, author) {
   try {
     const { contract, signer } = await getBookAccessCOntract();
     const tx = await contract.register(name, desc, price, genre, author, tokenId);

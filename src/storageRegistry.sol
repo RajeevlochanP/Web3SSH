@@ -60,7 +60,7 @@ contract StorageRegistry is Ownable {
         require(bytes(_url).length > 0, "URL cannot be empty");
         require(_maxStorage > 0, "Max storage must be greater than zero");
         require(coins.balanceOf(msg.sender) >= MINIMUM_STAKE, "Insufficient token balance for stake");
-
+        require(!nodes[msg.sender].isActive,"already registered");
         // Staking Minimum stake amount
         require(coins.transferFrom(msg.sender, address(this), MINIMUM_STAKE), "Stake transfer failed");
 

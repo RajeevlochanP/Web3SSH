@@ -6,8 +6,8 @@ import StorageRegistryABI from "../ABI/StorageRegistry.json";
 
 
 const coinsContractAddress = import.meta.env.VITE_COINS_CONTRACT;
-const BookAccessAddress = import.meta.env.BOOK_ACCESS_ADDR;
-const StorageRegistryAddress = import.meta.env.STORAGE_REGISTRY_ADDR;
+const BookAccessAddress = import.meta.env.VITE_BOOK_ACCESS_ADDR;
+const StorageRegistryAddress = import.meta.env.VITE_STORAGE_REGISTRY_ADDR;
 
 
 export async function getCoinsContract() {
@@ -30,6 +30,7 @@ export async function getCoinsContract() {
 }
 
 export async function getBookAccessCOntract() {
+  console.log("incside 1");
   // Check if MetaMask is available
   if (!window.ethereum) {
     throw new Error("MetaMask not detected");
@@ -43,8 +44,9 @@ export async function getBookAccessCOntract() {
   const signer = await provider.getSigner();
 
   // Create contract instance with signer
+  console.log(BookAccessAddress+" fh");
   const contract = new ethers.Contract(BookAccessAddress, BookAccessABI.abi, signer);
-
+  console.log("incside ");
   return { contract, signer };
 }
 

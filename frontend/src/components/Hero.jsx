@@ -2,6 +2,7 @@ import styles from '../styles/Hero.module.css'
 import { useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom';
 import { useState,useRef } from 'react';
+import { getAllNodes, registeNode } from '../helper/storageFunctions';
 
 function Hero() {
     const isConnected = useSelector(state => state.connect.isConnected);
@@ -9,7 +10,10 @@ function Hero() {
     const url=useRef();
     const maxStorage=useRef();
 
-    function handleRegister() {
+    async function handleRegister() {
+        registeNode(url.current.value,maxStorage.current.value);
+        const nodes =await getAllNodes();
+        // console.log(nodes[0][0]);
         // logic to register goes here
     }
 
