@@ -130,6 +130,7 @@ function ReaderProfile() {
       return ;
     }
     setCoins(bal);
+    setIsWd(false);
     toast.success("updated balance successfully");
   }
 
