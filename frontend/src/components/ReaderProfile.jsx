@@ -100,6 +100,7 @@ function ReaderProfile() {
   }
 
   async function getCoins() {
+    let cns=getCoinsChange.current.value;
     let handle=await handleGetCoins(getCoinsChange.current.value);
     if(handle.length<=1) {
       toast.error(handle);

@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 export async function handleGetCoins(cost) {
     try {
         const { contract } = await getCoinsContract();
@@ -10,15 +12,29 @@ export async function handleGetCoins(cost) {
     }
 }
 
+// export async function checkBalance() {
+//     try {
+//         const { contract, signer } = await getCoinsContract();
+//         const userAddress = await signer.getAddress();
+//         const bal = await contract.balanceOf(userAddress);
+//         return bal;
+//     } catch (err) {
+//         console.error("Error checking balance:", err);
+//         return -1
+//     }
+// }
+
+//Updated checkBalance()
 export async function checkBalance() {
     try {
         const { contract, signer } = await getCoinsContract();
         const userAddress = await signer.getAddress();
-        const bal = await contract.balanceOf(userAddress);
-        return bal;
+        const bal = await contract.balanceOf(userAddress); // likely BigNumber
+        const formatted = ethers.formatEther(bal); // convert to string ether value
+        return parseFloat(formatted).toFixed(2); // return as number
     } catch (err) {
         console.error("Error checking balance:", err);
-        return -1
+        return -1;
     }
 }
 
