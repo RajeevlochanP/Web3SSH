@@ -52,6 +52,7 @@ export async function uploadFile(tokenId, nodeAddress, fileSize) {
 export async function readfile(tokenId) {
     const { contract,signer } = await getStorageRegistryContract();
     const { nodeAddress, url, cid, fileSize } = await contract.getFileLocation(tokenId);
+    console.log(nodeAddress, url, cid, fileSize);
     const userAddress=await signer.getAddress();
     try {
         const response = await fetch(`${url}/file/${cid}/${tokenId}/${userAddress}`, {
@@ -66,16 +67,16 @@ export async function readfile(tokenId) {
         const blob = await response.blob();
 
         await contract.confirmFile(tokenId);
-
+        console.log("dobne");
         // Automatically download the PDF
-        const url = window.URL.createObjectURL(blob);
+        const url1 = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = url;
+        a.href = url1;
         a.download = `${ cid }.pdf`;
         document.body.appendChild(a);
         a.click();
         a.remove();
-        window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(url1);
 
         alert("File downloaded successfully.");
     } catch (err) {

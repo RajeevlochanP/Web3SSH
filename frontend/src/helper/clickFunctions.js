@@ -82,9 +82,15 @@ export async function getAllBooks(){
     // ee function call try catch lo undali 
 }
 
-export async function buyAccess(tokenId){
-   const {contract,signer}=await getBookAccessCOntract();
+export async function buyAccess(pr,tokenId){
+    const data = await getCoinsContract();
+    const {contract,signer}=await getBookAccessCOntract();
+    const t = await data.contract.approve(contract.target, ethers.parseUnits(pr, 18));
+    await t.wait();
+    // console.log(tokenId);
+    //   console.log("hhdsh");
    const tx=await contract.buyAccess(tokenId);
+//    console.log("hhdsh");
    await tx.wait();
 }
 

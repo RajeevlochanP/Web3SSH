@@ -35,7 +35,6 @@ contract BookAccess is ERC1155, Ownable {
         uint _price,
         string memory _genre,
         address _author
-        // uint _tokenId
     ) external returns (uint) {
         uint _tokenId=nextTokenId++;
         allTokens.push(_tokenId);
@@ -53,6 +52,11 @@ contract BookAccess is ERC1155, Ownable {
         _mint(_author, _tokenId, 1, "");
         return _tokenId;
     }
+
+    function getNextTokenId() external view returns (uint) {
+        return nextTokenId;
+    }
+
 
     function getAllBooks() public view returns (BookMetaData[] memory) {
         uint length = allTokens.length;

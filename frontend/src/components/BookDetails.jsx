@@ -5,11 +5,13 @@ import ReaderNav from './ReaderNav'
 import styles from '../styles/BookDetails.module.css'
 import { useParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { isBought } from '../helper/clickFunctions'
+import { buyAccess, isBought } from '../helper/clickFunctions'
 import { useSelector } from 'react-redux'
+import { getAllBooks } from '../helper/clickFunctions.js'
+import { readfile } from '../helper/storageFunctions.js'
 
 function BookDetails() {
-    const books=useSelector(state=>state.booksData.books);
+    // const books=useSelector(state=>state.booksData.books);
     const [selectedFormat, setSelectedFormat] = useState('pdf')
     const [quantity, setQuantity] = useState(1)
     const [isWishlisted, setIsWishlisted] = useState(false)
@@ -30,16 +32,18 @@ function BookDetails() {
         async function getBookData() {
             try {
                 console.log("id: ",id);
-                console.log("dfj :"+books);
+                // console.log("dfj :"+books);
+                const books = await getAllBooks();
+                console.log(books);
+                let book;
                 for(let i=0;i<books.length;i++) {
-                    let book=books[i];
-                    if(book.tokenId===id) {
+                        book=books[i];
+                    if(parseFloat(book.tokenId).toFixed(0)===id) {
                         console.log(book);
                         setBook(book);
                         break;
                     }
                 }
-                // console.log("comple");
                 let own=await isBought(id);
                 console.log(own);
                 if(own) {
@@ -52,9 +56,9 @@ function BookDetails() {
         getBookData();
     }, [])
 
-    useEffect(()=>{
-        console.log(book);
-    },[book])
+    // useEffect(()=>{
+    //     console.log(book);
+    // },[book])
 
     // Sample book data - in real app this would come from props or API
     // const book = {
@@ -120,14 +124,24 @@ function BookDetails() {
         setShowPurchaseModal(true)
     }
 
-    const handleConfirmPurchase = () => {
+    const handleConfirmPurchase =async () => {
         // Handle purchase logic here
         console.log('Purchasing book:', {
-            bookId: book.id,
+            bookId: book.tokenId,
             format: selectedFormat,
             quantity: quantity,
-            price: book.formats.find(f => f.type === selectedFormat)?.price
+            price: parseFloat(book.price).toFixed(0)
         })
+        try{
+            await buyAccess(parseFloat(book.price).toFixed(0),book.tokenId);
+            const resf=await isBought(book.tokenId);
+            console.log(resf);
+            if(resf){
+                setIsOwned(true);
+            }
+        }catch{
+            
+        }
         setShowPurchaseModal(false)
         alert('Purchase successful! The book has been added to your library.')
     }
@@ -158,8 +172,9 @@ function BookDetails() {
         return stars
     }
 
-    function handleView() {
-
+    async function handleView() {
+        console.log(book.tokenId+" jjj");
+        await readfile(book.tokenId);
     }
     return (
         <div className={styles.bookDetails}>
@@ -402,14 +417,14 @@ function BookDetails() {
                                 <div className={styles.purchaseFormat}>
                                     <span className={styles.formatLabel}>Format: </span>
                                     <span className={styles.selectedFormat}>
-                                        {book.formats.find(f => f.type === selectedFormat)?.name}
+                                        {book.name}
                                     </span>
                                 </div>
 
                                 <div className={styles.purchasePrice}>
                                     <span className={styles.totalLabel}>Total: </span>
                                     <span className={styles.totalPrice}>
-                                        {book.formats.find(f => f.type === selectedFormat)?.price} ETH
+                                        {parseFloat(book.price).toFixed(0)} ETH
                                     </span>
                                 </div>
                             </div>
