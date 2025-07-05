@@ -16,18 +16,18 @@ function Header() {
 
     async function handleConnect() {
         async function connectWallet() {
-            if (!window.ethereum) {
-                // alert("Please install MetaMask!");
-                toast.error("neek account ledh raa");
-                return;
-            }
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            await provider.send("eth_requestAccounts", []);
-            const signer = await provider.getSigner();
-            const address = await signer.getAddress();
-            // console.log(signer+"  ");
-            dispatch(userdata.setData({address: address }));
-            // const vard=useSelector(state=>state.userdata.data);
+            // if (!window.ethereum) {
+            //     // alert("Please install MetaMask!");
+            //     toast.error("neek account ledh raa");
+            //     return;
+            // }
+            // const provider = new ethers.BrowserProvider(window.ethereum);
+            // await provider.send("eth_requestAccounts", []);
+            // const signer = await provider.getSigner();
+            // const address = await signer.getAddress();
+            // // console.log(signer+"  ");
+            // dispatch(userdata.setData({address: address }));
+            // // const vard=useSelector(state=>state.userdata.data);
             dispatch(connectionActions.connect());
             toast.success("Connected to wallet successfully");
         }

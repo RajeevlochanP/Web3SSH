@@ -16,6 +16,7 @@ function PublisherNav() {
                 <nav className={styles.nav}>
                   <Link to={"/p/home"} className={styles.navLink}>Dashboard</Link>
                   <Link to={"/p/publications"} className={styles.navLink}>Publications</Link>
+                  <Link to={"/p/publish/new"} className={styles.navLink}>Publish Book</Link>
                 </nav>
               </div>
             </header>

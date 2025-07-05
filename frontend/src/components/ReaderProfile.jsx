@@ -105,8 +105,8 @@ function ReaderProfile() {
     console.log("dsklhf");
     let handle=await handleGetCoins(getCoinsChange.current.value);
     // handle.wait();
-    if(handle.length<=1) {
-      toast.error(handle);
+    if(handle.length=='done') {
+      toast.success(handle);
       return ;
     }
     let bal=await checkBalance();
@@ -117,6 +117,7 @@ function ReaderProfile() {
     else {
       toast.error("Error while fetching balance");
     }
+    setIsAdding(false)
   }
 
   async function handleWithDraw() {

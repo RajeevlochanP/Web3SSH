@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import ReaderNav from './ReaderNav'
+import { Link } from 'react-router-dom'
 import styles from '../styles/ReaderHome.module.css'
 
 function ReaderHome() {
@@ -89,7 +90,7 @@ function ReaderHome() {
   return (
     <div className={styles.readerHome}>
       <ReaderNav />
-      
+
       <main className={styles.main}>
         {/* Hero Section */}
         <section className={styles.hero}>
@@ -125,8 +126,8 @@ function ReaderHome() {
             <h2 className={styles.sectionTitle} data-aos="fade-up">Browse by Genre</h2>
             <div className={styles.genresGrid}>
               {genres.map((genre, index) => (
-                <div 
-                  key={genre.name} 
+                <div
+                  key={genre.name}
                   className={styles.genreCard}
                   data-aos="fade-up"
                   data-aos-delay={index * 100}
@@ -149,26 +150,28 @@ function ReaderHome() {
                 Handpicked selections from our community of readers and authors
               </p>
             </div>
-            
+
             <div className={styles.booksGrid}>
               {featuredBooks.map((book, index) => (
-                <article 
-                  key={book.id} 
+                <article
+                  key={book.id}
                   className={styles.bookCard}
                   data-aos="fade-up"
                   data-aos-delay={index * 150}
                 >
                   <div className={styles.bookImageContainer}>
-                    <img 
-                      src={book.image} 
+                    <img
+                      src={book.image}
                       alt={book.title}
                       className={styles.bookImage}
                     />
                     <div className={styles.bookOverlay}>
-                      <button className={styles.previewButton}>Preview</button>
+                      <Link to={`/r/bookdet/${book.id}`}>
+                        <button className={styles.previewButton}>Preview</button>
+                      </Link>
                     </div>
                   </div>
-                  
+
                   <div className={styles.bookContent}>
                     <div className={styles.bookMeta}>
                       <span className={styles.bookGenre}>{book.genre}</span>
@@ -177,16 +180,16 @@ function ReaderHome() {
                         <span className={styles.ratingValue}>{book.rating}</span>
                       </div>
                     </div>
-                    
+
                     <h3 className={styles.bookTitle}>{book.title}</h3>
                     <p className={styles.bookAuthor}>by {book.author}</p>
                     <p className={styles.bookDescription}>{book.description}</p>
-                    
+
                     <div className={styles.bookFooter}>
                       <div className={styles.bookPrice}>{book.price}</div>
-                      <button className={styles.exploreButton}>
-                        Explore More
-                      </button>
+                      <Link to={`/r/bookdet/${book.id}`}>
+                        <button className={styles.exploreButton}>Explore</button>
+                      </Link>
                     </div>
                   </div>
                 </article>
@@ -206,7 +209,7 @@ function ReaderHome() {
                   <div className={styles.progressInfo}>
                     <h4>The Blockchain Revolution</h4>
                     <div className={styles.progressBar}>
-                      <div className={styles.progressFill} style={{width: '65%'}}></div>
+                      <div className={styles.progressFill} style={{ width: '65%' }}></div>
                     </div>
                     <span className={styles.progressText}>65% complete</span>
                   </div>
@@ -216,7 +219,7 @@ function ReaderHome() {
                   <div className={styles.progressInfo}>
                     <h4>Digital Nomad's Guide</h4>
                     <div className={styles.progressBar}>
-                      <div className={styles.progressFill} style={{width: '32%'}}></div>
+                      <div className={styles.progressFill} style={{ width: '32%' }}></div>
                     </div>
                     <span className={styles.progressText}>32% complete</span>
                   </div>
